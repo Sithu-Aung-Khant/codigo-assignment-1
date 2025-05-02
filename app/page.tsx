@@ -193,7 +193,7 @@ export default function Home() {
       </div>
       {/* Hero section with logo */}
       <div
-        className={`fixed top-12 left-10 right-0 z-50 flex flex-col items-center justify-center
+        className={`fixed top-6 md:top-12 md:left-10 left-5 right-0 z-50 flex flex-col items-center justify-center
           transition-all duration-500 ease-in-out
           ${
             rotateLeft && !revertRotation
@@ -202,7 +202,7 @@ export default function Home() {
           }
         `}
       >
-        <h1 className='text-6xl w-full font-semibold text-red-500 mb-4'>
+        <h1 className='md:text-6xl text-3xl w-full font-semibold text-red-500 mb-4'>
           HÜMAN RUSH{' '}
         </h1>
       </div>
@@ -303,8 +303,8 @@ export default function Home() {
             className='text-indigo-100 hover:text-indigo-50'
             aria-label='Discord'
           >
-            <div className='w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center'>
-              <FaDiscord className='w-6 h-6' />
+            <div className='md:size-10 size-8 bg-indigo-600 rounded-full flex items-center justify-center'>
+              <FaDiscord className='size-5 md:size-6' />
             </div>
           </a>
           <a
@@ -312,8 +312,8 @@ export default function Home() {
             className='text-gray-600 hover:text-gray-700'
             aria-label='GitHub'
           >
-            <div className='w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center'>
-              <FaGithub className='w-6 h-6' />
+            <div className='md:size-10 size-8 bg-gray-100 rounded-full flex items-center justify-center'>
+              <FaGithub className='size-5 md:size-6' />
             </div>
           </a>
           <a
@@ -321,12 +321,12 @@ export default function Home() {
             className='text-blue-100 hover:text-blue-50'
             aria-label='Twitter'
           >
-            <div className='w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center'>
-              <FaTwitter className='w-6 h-6' />
+            <div className='md:size-10 size-8 bg-blue-500 rounded-full flex items-center justify-center'>
+              <FaTwitter className='size-5 md:size-6' />
             </div>
           </a>
         </div>
-        <button className='relative md:-mr-8 text-white pl-6 py-3 w-[280px] h-40'>
+        <button className='relative -mr-8 text-white pl-6 py-3 w-[350px] md:w-[280px] h-40'>
           <Image
             src={blob}
             alt='Background Blob'
@@ -355,18 +355,18 @@ export default function Home() {
       {/* Third Stage Text Lines - Only visible when scroll > 80 */}
       {rotateLeft && revertRotation && (
         <div
-          className='absolute right-20 top-1/2 -translate-y-1/2 text-right animate-fade-in'
+          className='absolute left-4 md:left-0 md:right-20 top-1/4 md:top-1/2 -translate-y-1/2 text-right animate-fade-in'
           style={{
             animation: 'fade-slide-left 1s ease-out forwards',
           }}
         >
-          <div className='space-y-6'>
+          <div className='space-y-2 md:space-y-6'>
             {/* First line */}
             <div className='flex justify-end'>
               {'UNLEASH YOUR RUSH'.split('').map((letter, i) => (
                 <span
                   key={i}
-                  className='text-4xl font-bold text-red-500/80 tracking-wider inline-block'
+                  className='md:text-4xl font-bold text-red-500/80 tracking-wider inline-block'
                   style={{
                     animation: `wave 1s ease-in-out infinite`,
                     animationDelay: `${i * 0.05}s`,
@@ -381,7 +381,7 @@ export default function Home() {
               {'EMBRACE THE ENERGY'.split('').map((letter, i) => (
                 <span
                   key={i}
-                  className='text-3xl font-semibold text-red-500/60 tracking-wide inline-block'
+                  className='md:text-3xl font-semibold text-red-500/60 tracking-wide inline-block'
                   style={{
                     animation: `wave 1s ease-in-out infinite`,
                     animationDelay: `${i * 0.05}s`,
@@ -392,11 +392,11 @@ export default function Home() {
               ))}
             </div>
             {/* Third line */}
-            <div className='flex justify-end'>
+            <div className='flex md:justify-end'>
               {'BE LIMITLESS'.split('').map((letter, i) => (
                 <span
                   key={i}
-                  className='text-2xl font-medium text-red-500/40 tracking-normal inline-block'
+                  className='md:text-2xl font-medium text-red-500/40 tracking-normal inline-block'
                   style={{
                     animation: `wave 1s ease-in-out infinite`,
                     animationDelay: `${i * 0.05}s`,
