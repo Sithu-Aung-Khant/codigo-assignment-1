@@ -18,14 +18,36 @@ const sportsIcons: IconComponent[] = [
   Medal,
 ];
 
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial call
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowSize;
+};
+
 export default function Home() {
   const [scrollCount, setScrollCount] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const [rotateLeft, setRotateLeft] = useState(false);
   const [revertRotation, setRevertRotation] = useState(false);
+  const { width } = useWindowSize();
 
   // Array of human images from the public/humans folder
-  const images = [
+  const allImages = [
     'humans/standing-1.svg',
     'humans/standing-17.svg',
     'humans/standing-2.svg',
@@ -44,16 +66,30 @@ export default function Home() {
     'humans/standing-15.svg',
     'humans/standing-16.svg',
     'humans/standing-18.svg',
-    // 'humans/standing-19.svg',
-    // 'humans/standing-20.svg',
-    // 'humans/standing-21.svg',
-    // 'humans/standing-22.svg',
-    // 'humans/standing-23.svg',
-    // 'humans/standing-24.svg',
   ];
 
-  // Calculate center image index
+  // Get current grid configuration and images based on screen size
+  const isMobile = width < 768;
+  const images = isMobile ? allImages.slice(0, 9) : allImages;
+
+  // Calculate center image index based on current images array length
   const centerImageIndex = Math.floor(images.length / 2);
+
+  // Define grid configurations based on screen size
+  const gridConfig = {
+    mobile: {
+      columns: 3,
+      rows: 3, // Changed to 3 rows since we'll only show 9 images
+      rowSpacing: 10,
+    },
+    desktop: {
+      columns: 6,
+      rows: 4,
+      rowSpacing: 20,
+    },
+  };
+
+  const currentGrid = isMobile ? gridConfig.mobile : gridConfig.desktop;
 
   useEffect(() => {
     // Create throttled scroll handler that executes at most once every 50ms
@@ -210,14 +246,11 @@ export default function Home() {
       <div className='absolute inset-0 w-full h-full'>
         {images.map((image, index) => {
           const isCenterImage = index === centerImageIndex;
-          // const randomRotate = Math.random() * 30 - 15;
 
-          // Grid calculations
-          const columns = 6;
-          const rows = 4;
+          // Updated grid calculations using currentGrid
+          const { columns, rows, rowSpacing } = currentGrid;
           const columnWidth = 100 / columns;
           const rowHeight = 100 / rows;
-          const rowSpacing = 20;
 
           const rowIndex = Math.floor(index / columns);
           const columnIndex = index % columns;
@@ -246,14 +279,28 @@ export default function Home() {
                 transform: `translate(-50%, -50%) ${
                   rotateLeft && isCenterImage
                     ? revertRotation
-                      ? 'rotateZ(0deg) scale(0.7)' // Third stage: revert back to 0 degrees
-                      : 'rotateZ(-90deg) scale(0.7)' // Second stage: -90 degrees
+                      ? 'rotateZ(0deg) scale(0.7)'
+                      : 'rotateZ(-90deg) scale(0.7)'
                     : showAnimation && isCenterImage
                     ? 'rotate3d(0, 1, 0, 360deg)'
                     : ''
                 }`,
-                width: isCenterImage && rotateLeft ? '125vw' : '115vw',
-                height: isCenterImage && rotateLeft ? '125vh' : '115vh',
+                width:
+                  isCenterImage && rotateLeft
+                    ? isMobile
+                      ? '125vw'
+                      : '125vw'
+                    : isMobile
+                    ? '115vw'
+                    : '115vw',
+                height:
+                  isCenterImage && rotateLeft
+                    ? isMobile
+                      ? '125vh'
+                      : '125vh'
+                    : isMobile
+                    ? '115vh'
+                    : '115vh',
                 zIndex: rowIndex,
                 transitionDelay: rotateLeft ? '0s' : '0s',
                 transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
