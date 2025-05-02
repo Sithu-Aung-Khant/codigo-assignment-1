@@ -5,6 +5,18 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
 import { throttle } from 'lodash';
+import { Dumbbell, Bike, Users, Heart, Trophy, Medal } from 'lucide-react';
+
+type IconComponent = typeof Bike;
+
+const sportsIcons: IconComponent[] = [
+  Dumbbell,
+  Bike,
+  Users,
+  Heart,
+  Trophy,
+  Medal,
+];
 
 export default function Home() {
   const [scrollCount, setScrollCount] = useState(0);
@@ -139,6 +151,45 @@ export default function Home() {
             </div>
           );
         })}
+      </div>
+      {/* Floating Icons - Only visible in third stage */}
+      <div className='absolute inset-0 w-full h-full overflow-hidden pointer-events-none'>
+        {rotateLeft &&
+          revertRotation &&
+          [...Array(12)].map((_, i) => {
+            // Create deterministic but seemingly random positions
+            const randomY = (i * 19) % 80; // 0-80% from top
+            const startX = 100 + ((i * 17) % 20); // Start from 100-120% (outside right)
+            const speed = 15 + ((i * 13) % 10); // Animation duration 15-25s
+
+            const Icon = sportsIcons[i % sportsIcons.length];
+            const size = 40 + ((i * 11) % 24); // Icon size 24-48px
+            const rotationSpeed = 3 + ((i * 7) % 5); // Rotation duration 3-8s
+
+            return (
+              <div
+                key={`icon-${i}`}
+                className='absolute transition-opacity duration-1000 ease-in-out opacity-100'
+                style={{
+                  top: `${randomY}%`,
+                  right: `${-20}%`, // Start outside the screen
+                  animation: `float-icon ${speed}s linear infinite`,
+                  animationDelay: `${i * 0.8}s`,
+                }}
+              >
+                <div
+                  className='text-red-500/40'
+                  style={{
+                    animation: `spin ${rotationSpeed}s linear infinite`,
+                    width: `${size}px`,
+                    height: `${size}px`,
+                  }}
+                >
+                  <Icon size={size} />
+                </div>
+              </div>
+            );
+          })}
       </div>
       {/* Hero section with logo */}
       <div
