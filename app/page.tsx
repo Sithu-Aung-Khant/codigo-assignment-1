@@ -4,11 +4,13 @@ import blob from '@/public/blob.svg';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
+import { throttle } from 'lodash';
 
 export default function Home() {
   const [scrollCount, setScrollCount] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const [rotateLeft, setRotateLeft] = useState(false);
+  const [revertRotation, setRevertRotation] = useState(false);
 
   // Array of human images from the public/humans folder
   const images = [
@@ -42,35 +44,47 @@ export default function Home() {
   const centerImageIndex = Math.floor(images.length / 2);
 
   useEffect(() => {
-    const handleScroll = (e: WheelEvent) => {
-      e.preventDefault();
+    // Create throttled scroll handler that executes at most once every 50ms
+    const handleScroll = throttle(
+      (e: WheelEvent) => {
+        e.preventDefault();
 
-      // Determine scroll direction (positive deltaY means scrolling down)
-      const isScrollingDown = e.deltaY > 0;
+        // Determine scroll direction (positive deltaY means scrolling down)
+        const isScrollingDown = e.deltaY > 0;
 
-      setScrollCount((prev) => {
-        // Calculate new count based on direction
-        const newCount = isScrollingDown ? prev + 1 : Math.max(0, prev - 1);
+        setScrollCount((prev) => {
+          // Calculate new count based on direction
+          const newCount = isScrollingDown ? prev + 1 : Math.max(0, prev - 1);
+          console.log('newCount', newCount);
+          // Update animations based on new count
+          if (newCount >= 80) {
+            setRotateLeft(true);
+            setShowAnimation(true);
+            setRevertRotation(true);
+          } else if (newCount >= 40) {
+            setRotateLeft(true);
+            setShowAnimation(true);
+            setRevertRotation(false);
+          } else if (newCount < 40) {
+            setRotateLeft(false);
+            setShowAnimation(false);
+            setRevertRotation(false);
+          }
 
-        // Update animations based on new count
-        if (newCount >= 3) {
-          setShowAnimation(true);
-        } else if (newCount < 3) {
-          setShowAnimation(false);
-        }
-
-        if (newCount >= 2) {
-          setRotateLeft(true);
-        } else {
-          setRotateLeft(false);
-        }
-
-        return newCount;
-      });
-    };
+          return newCount;
+        });
+      },
+      50,
+      { leading: true, trailing: false }
+    );
 
     window.addEventListener('wheel', handleScroll, { passive: false });
-    return () => window.removeEventListener('wheel', handleScroll);
+
+    // Cleanup function to remove event listener and cancel any pending throttled executions
+    return () => {
+      window.removeEventListener('wheel', handleScroll);
+      handleScroll.cancel(); // Cancel any pending throttled executions
+    };
   }, []);
 
   return (
@@ -82,7 +96,7 @@ export default function Home() {
       {/* Floating Blobs - Only visible when rotateLeft is true */}
       <div className='absolute inset-0 w-full h-full overflow-hidden pointer-events-none'>
         {[...Array(9)].map((_, i) => {
-          const row = Math.floor(i / 3);
+          // const row = Math.floor(i / 3);
           const col = i % 3;
 
           // Fixed random values using index instead of Math.random()
@@ -131,7 +145,7 @@ export default function Home() {
         className={`fixed top-12 left-10 right-0 z-50 flex flex-col items-center justify-center
           transition-all duration-500 ease-in-out
           ${
-            scrollCount >= 2
+            rotateLeft && !revertRotation
               ? 'opacity-0 translate-y-[-100%]'
               : 'opacity-100 translate-y-0'
           }
@@ -180,15 +194,17 @@ export default function Home() {
                 top: isCenterImage ? (rotateLeft ? '65%' : '50%') : top,
                 transform: `translate(-50%, -50%) ${
                   rotateLeft && isCenterImage
-                    ? 'rotateZ(-90deg) scale(0.7)'
+                    ? revertRotation
+                      ? 'rotateZ(0deg) scale(0.7)' // Third stage: revert back to 0 degrees
+                      : 'rotateZ(-90deg) scale(0.7)' // Second stage: -90 degrees
                     : showAnimation && isCenterImage
                     ? 'rotate3d(0, 1, 0, 360deg)'
-                    : ``
+                    : ''
                 }`,
                 width: isCenterImage && rotateLeft ? '125vw' : '115vw',
                 height: isCenterImage && rotateLeft ? '125vh' : '115vh',
                 zIndex: rowIndex,
-                transitionDelay: rotateLeft ? '0s' : `0s`,
+                transitionDelay: rotateLeft ? '0s' : '0s',
                 transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
                 transformOrigin: 'center center',
               }}
@@ -270,7 +286,7 @@ export default function Home() {
           <span className='relative z-10'>view collection</span>
         </button>
       </div>
-      {rotateLeft && (
+      {rotateLeft && !revertRotation && (
         <div
           className='absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 z-50 
             animate-fade-in text-center'
