@@ -1,11 +1,13 @@
 'use client';
 
+import { useScrollHandler } from '@/lib/hooks/useScrollHandler';
+import { useWindowSize } from '@/lib/hooks/useWindowSize';
+import { allImages } from '@/lib/images';
 import blob from '@/public/blob.svg';
+import { Bike, Dumbbell, Heart, Medal, Trophy, Users } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
-import { throttle } from 'lodash';
-import { Dumbbell, Bike, Users, Heart, Trophy, Medal } from 'lucide-react';
+import { AnimatedTextLines } from './components/AnimatedTextLines';
+import { ViewCollectionButton } from './components/ViewCollectionButton';
 
 type IconComponent = typeof Bike;
 
@@ -18,55 +20,9 @@ const sportsIcons: IconComponent[] = [
   Medal,
 ];
 
-const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 0,
-  });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-      });
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial call
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return windowSize;
-};
-
 export default function Home() {
-  const [scrollCount, setScrollCount] = useState(0);
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [rotateLeft, setRotateLeft] = useState(false);
-  const [revertRotation, setRevertRotation] = useState(false);
   const { width } = useWindowSize();
-
-  // Array of human images from the public/humans folder
-  const allImages = [
-    'humans/standing-1.svg',
-    'humans/standing-17.svg',
-    'humans/standing-2.svg',
-    'humans/standing-3.svg',
-    'humans/standing-4.svg',
-    'humans/standing-5.svg',
-    'humans/standing-6.svg',
-    'humans/standing-8.svg',
-    'humans/standing-9.svg',
-    'humans/standing-10.svg',
-    'humans/standing-11.svg',
-    'humans/standing-12.svg',
-    'humans/sitting-1.svg',
-    'humans/standing-13.svg',
-    'humans/standing-14.svg',
-    'humans/standing-15.svg',
-    'humans/standing-16.svg',
-    'humans/standing-18.svg',
-  ];
+  const { showAnimation, rotateLeft, revertRotation } = useScrollHandler();
 
   // Get current grid configuration and images based on screen size
   const isMobile = width < 1080;
@@ -79,7 +35,7 @@ export default function Home() {
   const gridConfig = {
     mobile: {
       columns: 3,
-      rows: 3, // Changed to 3 rows since we'll only show 9 images
+      rows: 3,
       rowSpacing: 10,
     },
     desktop: {
@@ -90,50 +46,6 @@ export default function Home() {
   };
 
   const currentGrid = isMobile ? gridConfig.mobile : gridConfig.desktop;
-
-  useEffect(() => {
-    // Create throttled scroll handler that executes at most once every 50ms
-    const handleScroll = throttle(
-      (e: WheelEvent) => {
-        e.preventDefault();
-
-        // Determine scroll direction (positive deltaY means scrolling down)
-        const isScrollingDown = e.deltaY > 0;
-
-        setScrollCount((prev) => {
-          // Calculate new count based on direction
-          const newCount = isScrollingDown ? prev + 1 : Math.max(0, prev - 1);
-          console.log('newCount', newCount);
-          // Update animations based on new count
-          if (newCount >= 80) {
-            setRotateLeft(true);
-            setShowAnimation(true);
-            setRevertRotation(true);
-          } else if (newCount >= 40) {
-            setRotateLeft(true);
-            setShowAnimation(true);
-            setRevertRotation(false);
-          } else if (newCount < 40) {
-            setRotateLeft(false);
-            setShowAnimation(false);
-            setRevertRotation(false);
-          }
-
-          return newCount;
-        });
-      },
-      50,
-      { leading: true, trailing: false }
-    );
-
-    window.addEventListener('wheel', handleScroll, { passive: false });
-
-    // Cleanup function to remove event listener and cancel any pending throttled executions
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-      handleScroll.cancel(); // Cancel any pending throttled executions
-    };
-  }, []);
 
   return (
     <main
@@ -339,51 +251,7 @@ export default function Home() {
           );
         })}
       </div>
-      {/* View Collection Button */}
-      <div
-        className={`fixed flex justify-between w-full items-center gap-x-4 md:gap-x-0 -bottom-16 md:-bottom-10 ml-6 md:ml-8 z-50 
-        transition-opacity duration-500`}
-      >
-        <div className='flex md:mb-5 gap-5'>
-          <a
-            href='https://discord.com'
-            className='text-indigo-100 hover:text-indigo-50'
-            aria-label='Discord'
-          >
-            <div className='md:size-10 size-8 bg-indigo-600 rounded-full flex items-center justify-center'>
-              <FaDiscord className='size-5 md:size-6' />
-            </div>
-          </a>
-          <a
-            href='https://github.com'
-            className='text-gray-600 hover:text-gray-700'
-            aria-label='GitHub'
-          >
-            <div className='md:size-10 size-8 bg-gray-100 rounded-full flex items-center justify-center'>
-              <FaGithub className='size-5 md:size-6' />
-            </div>
-          </a>
-          <a
-            href='https://twitter.com'
-            className='text-blue-100 hover:text-blue-50'
-            aria-label='Twitter'
-          >
-            <div className='md:size-10 size-8 bg-blue-500 rounded-full flex items-center justify-center'>
-              <FaTwitter className='size-5 md:size-6' />
-            </div>
-          </a>
-        </div>
-        <button className='relative -mr-8 text-white pl-6 py-3 w-[350px] md:w-[280px] h-52 md:h-40'>
-          <Image
-            src={blob}
-            alt='Background Blob'
-            fill
-            className='object-cover -z-10 transition-transform duration-300 hover:scale-105'
-            style={{ objectPosition: 'center' }}
-          />
-          <span className='relative z-10'>view collection</span>
-        </button>
-      </div>
+      <ViewCollectionButton />
       {rotateLeft && !revertRotation && (
         <div
           className='absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 z-50 
@@ -399,62 +267,11 @@ export default function Home() {
           </h1>
         </div>
       )}
-      {/* Third Stage Text Lines - Only visible when scroll > 80 */}
       {rotateLeft && revertRotation && (
-        <div
-          className='absolute left-4 md:left-20 lg:left-0 lg:right-20 top-1/4 lg:top-1/2 -translate-y-1/2 text-right animate-fade-in'
-          style={{
-            animation: 'fade-slide-left 1s ease-out forwards',
-          }}
-        >
-          <div className='space-y-2 md:space-y-6'>
-            {/* First line */}
-            <div className='flex justify-end'>
-              {'UNLEASH YOUR RUSH'.split('').map((letter, i) => (
-                <span
-                  key={i}
-                  className='md:text-4xl font-bold text-red-500/80 tracking-wider inline-block'
-                  style={{
-                    animation: `wave 1s ease-in-out infinite`,
-                    animationDelay: `${i * 0.05}s`,
-                  }}
-                >
-                  {letter === ' ' ? '\u00A0' : letter}
-                </span>
-              ))}
-            </div>
-            {/* Second line */}
-            <div className='flex lg:justify-end'>
-              {'EMBRACE THE ENERGY'.split('').map((letter, i) => (
-                <span
-                  key={i}
-                  className='md:text-3xl font-semibold text-red-500/60 tracking-wide inline-block'
-                  style={{
-                    animation: `wave 1s ease-in-out infinite`,
-                    animationDelay: `${i * 0.05}s`,
-                  }}
-                >
-                  {letter === ' ' ? '\u00A0' : letter}
-                </span>
-              ))}
-            </div>
-            {/* Third line */}
-            <div className='flex lg:justify-end'>
-              {'BE LIMITLESS'.split('').map((letter, i) => (
-                <span
-                  key={i}
-                  className='md:text-2xl font-medium text-red-500/40 tracking-normal inline-block'
-                  style={{
-                    animation: `wave 1s ease-in-out infinite`,
-                    animationDelay: `${i * 0.05}s`,
-                  }}
-                >
-                  {letter === ' ' ? '\u00A0' : letter}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        <AnimatedTextLines
+          rotateLeft={rotateLeft}
+          revertRotation={revertRotation}
+        />
       )}
     </main>
   );
