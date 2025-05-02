@@ -1,101 +1,112 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  // Array of human images from the public/humans folder
+  const images = [
+    'humans/sitting-1.svg',
+    'humans/sitting-2.svg',
+    'humans/sitting-3.svg',
+    'humans/sitting-4.svg',
+    'humans/sitting-5.svg',
+    'humans/sitting-6.svg',
+    'humans/sitting-7.svg',
+    'humans/sitting-8.svg',
+    'humans/standing-1.svg',
+    'humans/standing-2.svg',
+    'humans/standing-3.svg',
+    'humans/standing-4.svg',
+    'humans/standing-5.svg',
+    'humans/standing-6.svg',
+    'humans/standing-7.svg',
+    'humans/standing-8.svg',
+    'humans/standing-9.svg',
+    'humans/standing-10.svg',
+    'humans/standing-11.svg',
+    'humans/standing-12.svg',
+    'humans/standing-13.svg',
+    'humans/standing-14.svg',
+    'humans/standing-15.svg',
+    'humans/standing-16.svg',
+    'humans/standing-17.svg',
+    'humans/standing-18.svg',
+    'humans/standing-19.svg',
+    'humans/standing-20.svg',
+    'humans/standing-21.svg',
+    'humans/standing-22.svg',
+    'humans/standing-23.svg',
+    'humans/standing-24.svg',
+  ];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+  return (
+    <main className='h-screen w-full relative overflow-hidden bg-white'>
+      {/* Hero section with logo */}
+      <div className='fixed top-4 left-0 right-0 z-50 flex flex-col items-center justify-center'>
+        <h1 className='text-6xl font-bold text-blue-600 mb-4'>Fluffy HUGS</h1>
+        <div className='flex gap-4'>
+          <a href='#' className='text-blue-600 hover:text-blue-700'>
+            <div className='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center'>
+              {/* Add your social icons here */}
+            </div>
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      {/* Overlapping images container */}
+      <div className='absolute inset-0 w-full h-full'>
+        {images.map((image, index) => {
+          const randomRotate = Math.random() * 30 - 15;
+          const randomScale = 0.7 + Math.random() * 0.6;
+
+          // Adjust grid calculations
+          const columns = 6;
+          const rows = 5;
+          const columnWidth = 100 / columns;
+          const rowHeight = 100 / rows;
+          const rowSpacing = 15; // Add extra spacing between rows (in percentage)
+
+          // Center the image within its grid cell
+          const left = `${
+            (index % columns) * columnWidth + columnWidth * 0.5
+          }%`;
+          const top = `${
+            (Math.floor(index / columns) % rows) * (rowHeight + rowSpacing) +
+            rowHeight * 0.5
+          }%`;
+
+          return (
+            <div
+              key={index}
+              className='absolute transition-all duration-500 hover:z-50 hover:scale-110'
+              style={{
+                left,
+                top,
+                transform: `translate(-50%, -50%) rotate(${randomRotate}deg) scale(${randomScale})`,
+                width: '80vw',
+                height: '80vh',
+                zIndex: index,
+              }}
+            >
+              <div className='relative w-full h-full group'>
+                <Image
+                  src={`/${image}`}
+                  alt={`Human Illustration ${index + 1}`}
+                  fill
+                  className='object-contain transition-all duration-300 group-hover:scale-105'
+                  sizes='(max-width: 640px) 30vw, (max-width: 768px) 25vw, 20vw'
+                  priority={index < 8}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* View Collection Button */}
+      <div className='fixed bottom-8 right-8 z-50'>
+        <button className='bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-colors duration-300 shadow-lg'>
+          view collection
+        </button>
+      </div>
+    </main>
   );
 }
