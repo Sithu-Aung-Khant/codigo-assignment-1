@@ -45,14 +45,26 @@ export default function Home() {
     const handleScroll = (e: WheelEvent) => {
       e.preventDefault();
 
+      // Determine scroll direction (positive deltaY means scrolling down)
+      const isScrollingDown = e.deltaY > 0;
+
       setScrollCount((prev) => {
-        const newCount = prev + 1;
+        // Calculate new count based on direction
+        const newCount = isScrollingDown ? prev + 1 : Math.max(0, prev - 1);
+
+        // Update animations based on new count
         if (newCount >= 3) {
           setShowAnimation(true);
+        } else if (newCount < 3) {
+          setShowAnimation(false);
         }
-        if (newCount === 2) {
+
+        if (newCount >= 2) {
           setRotateLeft(true);
+        } else {
+          setRotateLeft(false);
         }
+
         return newCount;
       });
     };
@@ -64,7 +76,16 @@ export default function Home() {
   return (
     <main className='h-screen w-full relative overflow-hidden bg-white'>
       {/* Hero section with logo */}
-      <div className='fixed top-12 left-10 right-0 z-50 flex flex-col items-center justify-center'>
+      <div
+        className={`fixed top-12 left-10 right-0 z-50 flex flex-col items-center justify-center
+          transition-all duration-500 ease-in-out
+          ${
+            scrollCount >= 2
+              ? 'opacity-0 translate-y-[-100%]'
+              : 'opacity-100 translate-y-0'
+          }
+        `}
+      >
         <h1 className='text-6xl w-full font-semibold text-red-500 mb-4'>
           HÜMAN RUSH{' '}
         </h1>
@@ -73,7 +94,7 @@ export default function Home() {
       <div className='absolute inset-0 w-full h-full'>
         {images.map((image, index) => {
           const isCenterImage = index === centerImageIndex;
-          const randomRotate = Math.random() * 30 - 15;
+          // const randomRotate = Math.random() * 30 - 15;
 
           // Grid calculations
           const columns = 6;
@@ -105,18 +126,18 @@ export default function Home() {
                 ${isCenterImage ? 'hover:z-50 hover:scale-110' : ''}`}
               style={{
                 left: isCenterImage ? '50%' : left,
-                top: isCenterImage ? '50%' : top,
+                top: isCenterImage ? (rotateLeft ? '65%' : '50%') : top,
                 transform: `translate(-50%, -50%) ${
                   rotateLeft && isCenterImage
-                    ? 'rotateZ(-90deg)'
+                    ? 'rotateZ(-90deg) scale(0.7)'
                     : showAnimation && isCenterImage
                     ? 'rotate3d(0, 1, 0, 360deg)'
-                    : `rotate(${randomRotate}deg)`
+                    : ``
                 }`,
-                width: '115vw',
-                height: '115vh',
-                zIndex: isCenterImage ? 50 : rowIndex,
-                transitionDelay: rotateLeft ? '0s' : `${totalDelay}s`,
+                width: isCenterImage && rotateLeft ? '125vw' : '115vw',
+                height: isCenterImage && rotateLeft ? '125vh' : '115vh',
+                zIndex: rowIndex,
+                transitionDelay: rotateLeft ? '0s' : `0s`,
                 transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
                 transformOrigin: 'center center',
               }}
@@ -155,10 +176,10 @@ export default function Home() {
       </div>
       {/* View Collection Button */}
       <div
-        className={`fixed flex justify-between w-full items-center -bottom-10 -right-14 z-50 
+        className={`fixed flex justify-between w-full items-center gap-x-4 md:gap-x-0 -bottom-10 ml-6 md:ml-8 z-50 
         transition-opacity duration-500`}
       >
-        <div className='flex gap-5'>
+        <div className='flex md:mb-5 gap-5'>
           <a
             href='https://discord.com'
             className='text-indigo-100 hover:text-indigo-50'
@@ -187,7 +208,7 @@ export default function Home() {
             </div>
           </a>
         </div>
-        <button className='relative text-white pl-6 py-3 w-[280px] h-40'>
+        <button className='relative md:-mr-8 text-white pl-6 py-3 w-[280px] h-40'>
           <Image
             src={blob}
             alt='Background Blob'
@@ -198,6 +219,21 @@ export default function Home() {
           <span className='relative z-10'>view collection</span>
         </button>
       </div>
+      {rotateLeft && (
+        <div
+          className='absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 z-50 
+            animate-fade-in text-center'
+          style={{
+            width: 'max-content',
+            transformOrigin: 'center center',
+            transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+        >
+          <h1 className='text-5xl md:text-[158px] font-semibold text-red-500 whitespace-nowrap'>
+            HÜMAN RUSH
+          </h1>
+        </div>
+      )}
     </main>
   );
 }
