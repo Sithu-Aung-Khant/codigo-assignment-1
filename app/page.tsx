@@ -69,7 +69,7 @@ export default function Home() {
   ];
 
   // Get current grid configuration and images based on screen size
-  const isMobile = width < 768;
+  const isMobile = width < 1080;
   const images = isMobile ? allImages.slice(0, 9) : allImages;
 
   // Calculate center image index based on current images array length
@@ -229,7 +229,7 @@ export default function Home() {
       </div>
       {/* Hero section with logo */}
       <div
-        className={`fixed top-6 md:top-12 md:left-10 left-5 right-0 z-50 flex flex-col items-center justify-center
+        className={`fixed top-6 lg:top-12 lg:left-10 left-6 right-0 z-50 flex flex-col items-center justify-center
           transition-all duration-500 ease-in-out
           ${
             rotateLeft && !revertRotation
@@ -238,7 +238,7 @@ export default function Home() {
           }
         `}
       >
-        <h1 className='md:text-6xl text-3xl w-full font-semibold text-red-500 mb-4'>
+        <h1 className='lg:text-6xl md:text-5xl text-3xl w-full font-semibold text-red-500 mb-4'>
           HÜMAN RUSH{' '}
         </h1>
       </div>
@@ -341,7 +341,7 @@ export default function Home() {
       </div>
       {/* View Collection Button */}
       <div
-        className={`fixed flex justify-between w-full items-center gap-x-4 md:gap-x-0 -bottom-10 ml-6 md:ml-8 z-50 
+        className={`fixed flex justify-between w-full items-center gap-x-4 md:gap-x-0 -bottom-16 md:-bottom-10 ml-6 md:ml-8 z-50 
         transition-opacity duration-500`}
       >
         <div className='flex md:mb-5 gap-5'>
@@ -373,7 +373,7 @@ export default function Home() {
             </div>
           </a>
         </div>
-        <button className='relative -mr-8 text-white pl-6 py-3 w-[350px] md:w-[280px] h-40'>
+        <button className='relative -mr-8 text-white pl-6 py-3 w-[350px] md:w-[280px] h-52 md:h-40'>
           <Image
             src={blob}
             alt='Background Blob'
@@ -394,7 +394,7 @@ export default function Home() {
             transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
-          <h1 className='text-5xl md:text-[158px] font-semibold text-red-500 whitespace-nowrap'>
+          <h1 className='text-5xl md:text-[95px] lg:text-[158px] font-semibold text-red-500 whitespace-nowrap'>
             HÜMAN RUSH
           </h1>
         </div>
@@ -402,7 +402,7 @@ export default function Home() {
       {/* Third Stage Text Lines - Only visible when scroll > 80 */}
       {rotateLeft && revertRotation && (
         <div
-          className='absolute left-4 md:left-0 md:right-20 top-1/4 md:top-1/2 -translate-y-1/2 text-right animate-fade-in'
+          className='absolute left-4 md:left-20 lg:left-0 lg:right-20 top-1/4 lg:top-1/2 -translate-y-1/2 text-right animate-fade-in'
           style={{
             animation: 'fade-slide-left 1s ease-out forwards',
           }}
@@ -424,7 +424,7 @@ export default function Home() {
               ))}
             </div>
             {/* Second line */}
-            <div className='flex justify-end'>
+            <div className='flex lg:justify-end'>
               {'EMBRACE THE ENERGY'.split('').map((letter, i) => (
                 <span
                   key={i}
@@ -439,7 +439,7 @@ export default function Home() {
               ))}
             </div>
             {/* Third line */}
-            <div className='flex md:justify-end'>
+            <div className='flex lg:justify-end'>
               {'BE LIMITLESS'.split('').map((letter, i) => (
                 <span
                   key={i}
