@@ -21,20 +21,20 @@ export default function Home() {
     'humans/standing-8.svg',
     'humans/standing-9.svg',
     'humans/standing-10.svg',
-    'humans/standing-11.svg',
-    'humans/standing-12.svg',
-    'humans/standing-13.svg',
-    'humans/standing-14.svg',
-    'humans/standing-15.svg',
-    'humans/standing-16.svg',
-    'humans/standing-17.svg',
-    'humans/standing-18.svg',
-    'humans/standing-19.svg',
-    'humans/standing-20.svg',
-    'humans/standing-21.svg',
-    'humans/standing-22.svg',
-    'humans/standing-23.svg',
-    'humans/standing-24.svg',
+    // 'humans/standing-11.svg',
+    // 'humans/standing-12.svg',
+    // 'humans/standing-13.svg',
+    // 'humans/standing-14.svg',
+    // 'humans/standing-15.svg',
+    // 'humans/standing-16.svg',
+    // 'humans/standing-17.svg',
+    // 'humans/standing-18.svg',
+    // 'humans/standing-19.svg',
+    // 'humans/standing-20.svg',
+    // 'humans/standing-21.svg',
+    // 'humans/standing-22.svg',
+    // 'humans/standing-23.svg',
+    // 'humans/standing-24.svg',
   ];
 
   return (
@@ -59,10 +59,13 @@ export default function Home() {
 
           // Adjust grid calculations
           const columns = 6;
-          const rows = 5;
+          const rows = 4;
           const columnWidth = 100 / columns;
           const rowHeight = 100 / rows;
           const rowSpacing = 15; // Add extra spacing between rows (in percentage)
+
+          // Calculate row index
+          const rowIndex = Math.floor(index / columns);
 
           // Center the image within its grid cell
           const left = `${
@@ -81,12 +84,12 @@ export default function Home() {
                 left,
                 top,
                 transform: `translate(-50%, -50%) rotate(${randomRotate}deg) scale(${randomScale})`,
-                width: '80vw',
-                height: '80vh',
-                zIndex: index,
+                width: '100vw',
+                height: '100vh',
+                zIndex: rowIndex,
               }}
             >
-              <div className='relative w-full h-full group'>
+              <div className='relative w-full h-full group animate-bounce-wave'>
                 <Image
                   src={`/${image}`}
                   alt={`Human Illustration ${index + 1}`}
