@@ -3,11 +3,11 @@
 import { useScrollHandler } from '@/lib/hooks/useScrollHandler';
 import { useWindowSize } from '@/lib/hooks/useWindowSize';
 import { allImages } from '@/lib/images';
-import blob from '@/public/blob.svg';
 import { Bike, Dumbbell, Heart, Medal, Trophy, Users } from 'lucide-react';
 import Image from 'next/image';
 import { AnimatedTextLines } from './components/AnimatedTextLines';
 import { ViewCollectionButton } from './components/ViewCollectionButton';
+import { FloatingBlobs } from './components/FloatingBlobs';
 
 type IconComponent = typeof Bike;
 
@@ -53,66 +53,21 @@ export default function Home() {
         rotateLeft ? 'bg-amber-50' : 'bg-white'
       }`}
     >
-      {/* Floating Blobs - Only visible when rotateLeft is true */}
-      <div className='absolute inset-0 w-full h-full overflow-hidden pointer-events-none'>
-        {[...Array(9)].map((_, i) => {
-          // const row = Math.floor(i / 3);
-          const col = i % 3;
+      {/* Floating Blobs */}
+      <FloatingBlobs rotateLeft={rotateLeft} />
 
-          // Fixed random values using index instead of Math.random()
-          // This ensures the same values are used on each render
-          const randomX = ((i * 13) % 15) - 7.5; // Deterministic but appears random
-          const randomY = ((i * 17) % 15) - 7.5;
-          const left = `${col * 33.33 + 16.66 + randomX}%`;
-          const bottom = `${randomY - 10}%`;
-
-          // Fixed size and duration based on index
-          const size = 180 + ((i * 23) % 40); // Still varies but stays consistent
-          const duration = 8; // Fixed duration for all blobs
-
-          return (
-            <div
-              key={i}
-              className={`absolute transition-opacity duration-1000 ease-in-out ${
-                rotateLeft ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{
-                left,
-                bottom,
-                animation: `float-blob ${duration}s linear infinite`,
-                animationDelay: `${i * 0.5}s`, // Increased delay between blobs
-              }}
-            >
-              <Image
-                src={blob}
-                alt={`Floating blob ${i + 1}`}
-                width={size}
-                height={size}
-                className='mix-blend-multiply'
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  filter: `hue-rotate(${i * 40}deg)`,
-                  opacity: 0.3 + ((i * 7) % 20) / 100, // Deterministic opacity between 0.3-0.5
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
       {/* Floating Icons - Only visible in third stage */}
       <div className='absolute inset-0 w-full h-full overflow-hidden pointer-events-none'>
         {rotateLeft &&
           revertRotation &&
           [...Array(12)].map((_, i) => {
-            // Create deterministic but seemingly random positions
-            const randomY = (i * 19) % 80; // 0-80% from top
-            const startX = 100 + ((i * 17) % 20); // Start from 100-120% (outside right)
-            const speed = 15 + ((i * 13) % 10); // Animation duration 15-25s
+            const randomY = (i * 19) % 80;
+            // const startX = 100 + ((i * 17) % 20);
+            const speed = 15 + ((i * 13) % 10);
 
             const Icon = sportsIcons[i % sportsIcons.length];
-            const size = 40 + ((i * 11) % 24); // Icon size 24-48px
-            const rotationSpeed = 3 + ((i * 7) % 5); // Rotation duration 3-8s
+            const size = 40 + ((i * 11) % 24);
+            const rotationSpeed = 3 + ((i * 7) % 5);
 
             return (
               <div
@@ -120,7 +75,7 @@ export default function Home() {
                 className='absolute transition-opacity duration-1000 ease-in-out opacity-100'
                 style={{
                   top: `${randomY}%`,
-                  right: `${-20}%`, // Start outside the screen
+                  right: `${-20}%`,
                   animation: `float-icon ${speed}s linear infinite`,
                   animationDelay: `${i * 0.8}s`,
                 }}
