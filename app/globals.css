@@ -26,6 +26,7 @@
 
 .animate-bounce-wave {
   animation: bounce-wave 1.5s ease-in-out infinite;
+  animation-delay: var(--animation-delay, 0s);
 }
 
 @layer base {
