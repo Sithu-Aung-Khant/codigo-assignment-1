@@ -1,8 +1,15 @@
-import Image from 'next/image';
+'use client';
+
 import blob from '@/public/blob.svg';
-import { FaTwitter, FaInstagram, FaGithub, FaDiscord } from 'react-icons/fa';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
 
 export default function Home() {
+  const [scrollCount, setScrollCount] = useState(0);
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [rotateLeft, setRotateLeft] = useState(false);
+
   // Array of human images from the public/humans folder
   const images = [
     'humans/standing-1.svg',
@@ -31,6 +38,29 @@ export default function Home() {
     // 'humans/standing-24.svg',
   ];
 
+  // Calculate center image index
+  const centerImageIndex = Math.floor(images.length / 2);
+
+  useEffect(() => {
+    const handleScroll = (e: WheelEvent) => {
+      e.preventDefault();
+
+      setScrollCount((prev) => {
+        const newCount = prev + 1;
+        if (newCount >= 3) {
+          setShowAnimation(true);
+        }
+        if (newCount === 2) {
+          setRotateLeft(true);
+        }
+        return newCount;
+      });
+    };
+
+    window.addEventListener('wheel', handleScroll, { passive: false });
+    return () => window.removeEventListener('wheel', handleScroll);
+  }, []);
+
   return (
     <main className='h-screen w-full relative overflow-hidden bg-white'>
       {/* Hero section with logo */}
@@ -42,20 +72,19 @@ export default function Home() {
       {/* Overlapping images container */}
       <div className='absolute inset-0 w-full h-full'>
         {images.map((image, index) => {
+          const isCenterImage = index === centerImageIndex;
           const randomRotate = Math.random() * 30 - 15;
 
-          // Adjust grid calculations
+          // Grid calculations
           const columns = 6;
           const rows = 4;
           const columnWidth = 100 / columns;
           const rowHeight = 100 / rows;
-          const rowSpacing = 20; // Add extra spacing between rows (in percentage)
+          const rowSpacing = 20;
 
-          // Calculate row and column index
           const rowIndex = Math.floor(index / columns);
           const columnIndex = index % columns;
 
-          // Center the image within its grid cell
           const left = `${
             (index % columns) * columnWidth + columnWidth * 0.5
           }%`;
@@ -64,39 +93,60 @@ export default function Home() {
             rowHeight * 0.5
           }%`;
 
-          // Calculate total delay based on row and column
-          const rowDelay = rowIndex * 0.5; // 0.5s delay per row
-          const columnDelay = columnIndex * 0.2; // 0.2s delay per column
+          const rowDelay = rowIndex * 0.5;
+          const columnDelay = columnIndex * 0.2;
           const totalDelay = rowDelay + columnDelay;
 
           return (
             <div
               key={index}
-              className='absolute transition-all duration-500 hover:z-50 hover:scale-110'
+              className={`absolute transition-all duration-1000 ease-in-out
+                ${showAnimation && !isCenterImage ? 'opacity-0' : 'opacity-100'}
+                ${isCenterImage ? 'hover:z-50 hover:scale-110' : ''}`}
               style={{
-                left,
-                top,
-                // transform: `translate(-50%, -50%)`,
-                transform: `translate(-50%, -50%) rotate(${randomRotate}deg)`,
+                left: isCenterImage ? '50%' : left,
+                top: isCenterImage ? '50%' : top,
+                transform: `translate(-50%, -50%) ${
+                  rotateLeft && isCenterImage
+                    ? 'rotateZ(-90deg)'
+                    : showAnimation && isCenterImage
+                    ? 'rotate3d(0, 1, 0, 360deg)'
+                    : `rotate(${randomRotate}deg)`
+                }`,
                 width: '115vw',
                 height: '115vh',
-                zIndex: rowIndex,
-                transitionDelay: `${totalDelay}s`,
+                zIndex: isCenterImage ? 50 : rowIndex,
+                transitionDelay: rotateLeft ? '0s' : `${totalDelay}s`,
+                transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
+                transformOrigin: 'center center',
               }}
             >
               <div
-                className='relative w-full h-full group animate-bounce-wave'
+                className={`relative w-full h-full group 
+                  ${
+                    !showAnimation && !rotateLeft ? 'animate-bounce-wave' : ''
+                  }`}
                 style={{
                   animationDelay: `${totalDelay}s`,
+                  transition: 'all 1s ease-in-out',
                 }}
               >
                 <Image
                   src={`/${image}`}
                   alt={`Human Illustration ${index + 1}`}
                   fill
-                  className='object-contain transition-all duration-300 group-hover:scale-105'
+                  className={`object-contain transition-all duration-1000 
+                    ${
+                      !showAnimation && !rotateLeft
+                        ? 'group-hover:scale-105'
+                        : ''
+                    }
+                    ${rotateLeft && isCenterImage ? 'scale-110' : ''}`}
                   sizes='(max-width: 640px) 30vw, (max-width: 768px) 25vw, 20vw'
                   priority={index < 8}
+                  style={{
+                    transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
                 />
               </div>
             </div>
@@ -104,7 +154,10 @@ export default function Home() {
         })}
       </div>
       {/* View Collection Button */}
-      <div className='fixed flex justify-between w-full items-center -bottom-10 -right-14 z-50'>
+      <div
+        className={`fixed flex justify-between w-full items-center -bottom-10 -right-14 z-50 
+        transition-opacity duration-500`}
+      >
         <div className='flex gap-5'>
           <a
             href='https://discord.com'

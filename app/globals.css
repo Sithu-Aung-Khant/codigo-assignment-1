@@ -24,6 +24,19 @@
   }
 }
 
+@keyframes rotate-to-horizontal {
+  0% {
+    transform: translate(-50%, -50%) rotateZ(0deg) rotateY(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotateZ(90deg) rotateY(0deg);
+  }
+}
+
+.rotate-horizontal {
+  animation: rotate-to-horizontal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 .animate-bounce-wave {
   animation: bounce-wave 1.5s ease-in-out infinite;
   animation-delay: var(--animation-delay, 0s);
