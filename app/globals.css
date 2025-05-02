@@ -6,6 +6,9 @@
   .text-balance {
     text-wrap: balance;
   }
+  .animate-float-blob {
+    animation: float-blob 15s linear infinite;
+  }
 }
 
 @keyframes bounce-wave {
@@ -30,6 +33,29 @@
   }
   100% {
     transform: translate(-50%, -50%) rotateZ(90deg) rotateY(0deg);
+  }
+}
+
+@keyframes float-blob {
+  0% {
+    transform: translateY(100%) rotate(0deg) scale(0.9);
+    opacity: 0.2;
+  }
+  25% {
+    transform: translateY(50vh) rotate(90deg) scale(1.1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(0) rotate(180deg) scale(0.9);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translateY(-50vh) rotate(270deg) scale(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg) scale(0.9);
+    opacity: 0.2;
   }
 }
 

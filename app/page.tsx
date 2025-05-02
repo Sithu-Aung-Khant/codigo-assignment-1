@@ -74,7 +74,58 @@ export default function Home() {
   }, []);
 
   return (
-    <main className='h-screen w-full relative overflow-hidden bg-white'>
+    <main
+      className={`h-screen w-full relative overflow-hidden transition-colors duration-1000 ease-in-out ${
+        rotateLeft ? 'bg-amber-50' : 'bg-white'
+      }`}
+    >
+      {/* Floating Blobs - Only visible when rotateLeft is true */}
+      <div className='absolute inset-0 w-full h-full overflow-hidden pointer-events-none'>
+        {[...Array(9)].map((_, i) => {
+          const row = Math.floor(i / 3);
+          const col = i % 3;
+
+          // Fixed random values using index instead of Math.random()
+          // This ensures the same values are used on each render
+          const randomX = ((i * 13) % 15) - 7.5; // Deterministic but appears random
+          const randomY = ((i * 17) % 15) - 7.5;
+          const left = `${col * 33.33 + 16.66 + randomX}%`;
+          const bottom = `${randomY - 10}%`;
+
+          // Fixed size and duration based on index
+          const size = 180 + ((i * 23) % 40); // Still varies but stays consistent
+          const duration = 8; // Fixed duration for all blobs
+
+          return (
+            <div
+              key={i}
+              className={`absolute transition-opacity duration-1000 ease-in-out ${
+                rotateLeft ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{
+                left,
+                bottom,
+                animation: `float-blob ${duration}s linear infinite`,
+                animationDelay: `${i * 0.5}s`, // Increased delay between blobs
+              }}
+            >
+              <Image
+                src={blob}
+                alt={`Floating blob ${i + 1}`}
+                width={size}
+                height={size}
+                className='mix-blend-multiply'
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  filter: `hue-rotate(${i * 40}deg)`,
+                  opacity: 0.3 + ((i * 7) % 20) / 100, // Deterministic opacity between 0.3-0.5
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
       {/* Hero section with logo */}
       <div
         className={`fixed top-12 left-10 right-0 z-50 flex flex-col items-center justify-center
