@@ -21,15 +21,15 @@ export const useScrollHandler = () => {
 
       if (isMobile) {
         // Mobile logic: Change state on the first scroll
-        if (newCount >= 2) {
+        if (newCount >= 6) {
           setRotateLeft(true);
           setShowAnimation(true);
           setRevertRotation(true);
-        } else if (newCount >= 1) {
+        } else if (newCount >= 3) {
           setRotateLeft(true);
           setShowAnimation(true);
           setRevertRotation(false);
-        } else if (newCount < 1) {
+        } else if (newCount < 3) {
           setRotateLeft(false);
           setShowAnimation(false);
           setRevertRotation(false);
