@@ -18,15 +18,15 @@ export const useScrollHandler = () => {
           const newCount = isScrollingDown ? prev + 1 : Math.max(0, prev - 1);
           console.log('newCount', newCount);
 
-          if (newCount >= 80) {
+          if (newCount >= 20) {
             setRotateLeft(true);
             setShowAnimation(true);
             setRevertRotation(true);
-          } else if (newCount >= 40) {
+          } else if (newCount >= 10) {
             setRotateLeft(true);
             setShowAnimation(true);
             setRevertRotation(false);
-          } else if (newCount < 40) {
+          } else if (newCount < 10) {
             setRotateLeft(false);
             setShowAnimation(false);
             setRevertRotation(false);
